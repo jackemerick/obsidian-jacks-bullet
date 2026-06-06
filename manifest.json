@@ -1,0 +1,11 @@
+{
+  "id": "jacks-bullet",
+  "name": "Jacks Bullet",
+  "version": "1.0.0",
+  "minAppVersion": "1.4.0",
+  "description": "Bullet Journal system — daily, monthly, future and project logs with guided onboarding.",
+  "author": "Jack Emerick",
+  "authorUrl": "https://jackemerick.com.br",
+  "fundingUrl": "https://jackemerick.com.br/jacks-bullet",
+  "isDesktopOnly": false
+}
