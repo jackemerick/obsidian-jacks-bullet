@@ -427,6 +427,11 @@ export default class JacksBulletPlugin extends Plugin {
 
     this.addSettingTab(new JacksBulletSettingTab(this.app, this));
 
+    // garante que as pastas existem sempre que o plugin carrega
+    if (this.settings.onboardingDone) {
+      await this.initFolders();
+    }
+
     // URL scheme: obsidian://jacks-bullet?action=daily
     this.registerObsidianProtocolHandler("jacks-bullet", async (params) => {
       if (params.action === "daily") await this.openOrCreateDailyLog(today());
