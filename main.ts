@@ -454,7 +454,11 @@ export default class JacksBulletPlugin extends Plugin {
     for (const part of parts) {
       current = current ? `${current}/${part}` : part;
       if (!this.app.vault.getAbstractFileByPath(current)) {
-        await this.app.vault.createFolder(current);
+        try {
+          await this.app.vault.createFolder(current);
+        } catch {
+          // pasta já existe — ignorar
+        }
       }
     }
   }
@@ -560,14 +564,12 @@ export default class JacksBulletPlugin extends Plugin {
   }
 
   async initFolders() {
-    await Promise.all([
-      this.ensureFolder(this.settings.logsFolder),
-      this.ensureFolder(`${this.settings.logsFolder}/daily`),
-      this.ensureFolder(`${this.settings.logsFolder}/monthly`),
-      this.ensureFolder(`${this.settings.logsFolder}/future`),
-      this.ensureFolder(this.settings.projectsFolder),
-      this.ensureFolder(this.settings.collectionsFolder),
-    ]);
+    await this.ensureFolder(this.settings.logsFolder);
+    await this.ensureFolder(`${this.settings.logsFolder}/daily`);
+    await this.ensureFolder(`${this.settings.logsFolder}/monthly`);
+    await this.ensureFolder(`${this.settings.logsFolder}/future`);
+    await this.ensureFolder(this.settings.projectsFolder);
+    await this.ensureFolder(this.settings.collectionsFolder);
   }
 
   async createCollection(name: string): Promise<TFile> {
