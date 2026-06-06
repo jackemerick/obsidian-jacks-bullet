@@ -26,7 +26,7 @@ function defaultFolders(name: string) {
     logsFolder: `${n}'s Logs`,
     projectsFolder: `${n}'s Projects`,
     collectionsFolder: `${n}'s Collections`,
-    recurringFile: `${n}'s Logs/recurring.md`,
+    recurringFile: "recurring.md",
   };
 }
 
@@ -36,7 +36,7 @@ const DEFAULT_SETTINGS: JacksBulletSettings = {
   logsFolder: "logs",
   projectsFolder: "projects",
   collectionsFolder: "collections",
-  recurringFile: "logs/recurring.md",
+  recurringFile: "recurring.md",
 };
 
 // ─── Date helpers ─────────────────────────────────────────────────────────────
@@ -381,6 +381,13 @@ export default class JacksBulletPlugin extends Plugin {
     });
 
     this.addSettingTab(new JacksBulletSettingTab(this.app, this));
+
+    // URL scheme: obsidian://jacks-bullet?action=daily
+    this.registerObsidianProtocolHandler("jacks-bullet", async (params) => {
+      if (params.action === "daily") await this.openOrCreateDailyLog(today());
+      if (params.action === "monthly") await this.openOrCreateMonthlyLog(today());
+      if (params.action === "index") await this.openFile("INDEX.md");
+    });
 
     if (!this.settings.onboardingDone) {
       setTimeout(() => {
@@ -828,7 +835,6 @@ class JacksBulletSettingTab extends PluginSettingTab {
         t.setValue(this.plugin.settings.logsFolder);
         t.onChange(async (v) => {
           this.plugin.settings.logsFolder = v;
-          this.plugin.settings.recurringFile = `${v}/recurring.md`;
           await this.plugin.saveSettings();
         });
       });
