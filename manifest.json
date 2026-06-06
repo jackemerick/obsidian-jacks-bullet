@@ -1,11 +1,11 @@
 {
-  "id": "jacks-bullet",
-  "name": "Jacks Bullet",
-  "version": "1.4.0",
+  "id": "jack-journal",
+  "name": "Jack Journal",
+  "version": "2.0.0",
   "minAppVersion": "1.4.0",
-  "description": "Bullet Journal system — daily, monthly, future and project logs with guided onboarding.",
+  "description": "Sistema de Bullet Journal para o Obsidian — diário, mensal, log futuro e projetos com onboarding guiado.",
   "author": "Jack Emerick",
   "authorUrl": "https://jackemerick.com.br",
-  "fundingUrl": "https://jackemerick.com.br/jacks-bullet",
+  "fundingUrl": "https://jackemerick.com.br/jack-journal",
   "isDesktopOnly": false
 }

@@ -11,7 +11,7 @@ import {
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
-interface JacksBulletSettings {
+interface JackJournalSettings {
   userName: string;
   onboardingDone: boolean;
   logsFolder: string;
@@ -21,22 +21,22 @@ interface JacksBulletSettings {
 }
 
 function defaultFolders(name: string) {
-  const n = name || "My";
+  const n = name || "Meu";
   return {
-    logsFolder: `${n}'s Logs`,
-    projectsFolder: `${n}'s Projects`,
-    collectionsFolder: `${n}'s Collections`,
-    recurringFile: "recurring.md",
+    logsFolder: `Diário de ${n}`,
+    projectsFolder: `Projetos de ${n}`,
+    collectionsFolder: `Coleções de ${n}`,
+    recurringFile: "recorrentes.md",
   };
 }
 
-const DEFAULT_SETTINGS: JacksBulletSettings = {
+const DEFAULT_SETTINGS: JackJournalSettings = {
   userName: "",
   onboardingDone: false,
   logsFolder: "logs",
-  projectsFolder: "projects",
-  collectionsFolder: "collections",
-  recurringFile: "recurring.md",
+  projectsFolder: "projetos",
+  collectionsFolder: "coleções",
+  recurringFile: "recorrentes.md",
 };
 
 // ─── Date helpers ─────────────────────────────────────────────────────────────
@@ -100,10 +100,10 @@ function daysInMonth(d: Date): number {
 // ─── Template builders ────────────────────────────────────────────────────────
 
 function buildRecurring(): string {
-  return `# Recurring Tasks
+  return `# Tarefas Recorrentes
 
-> Add one task per line below. These will be automatically included in every daily log.
-> Use plain text — no checkboxes needed here.
+> Adicione uma tarefa por linha abaixo. Elas serão incluídas automaticamente em cada log diário.
+> Use texto simples — sem checkboxes aqui.
 
 -
 -
@@ -112,7 +112,7 @@ function buildRecurring(): string {
 
 function buildProjectsSection(projectTasks: Record<string, string[]>): string {
   const entries = Object.entries(projectTasks);
-  if (entries.length === 0) return "> No active project tasks.\n";
+  if (entries.length === 0) return "> Nenhuma tarefa ativa em projetos.\n";
   return entries.map(([project, tasks]) =>
     `### ${project}\n${tasks.map((t) => `- [ ] ${t}`).join("\n")}`
   ).join("\n\n");
@@ -137,44 +137,44 @@ function buildDailyLog(d: Date, recurringTasks: string[], migratedTasks: string[
 
   const projects = buildProjectsSection(projectTasks);
 
-  return `# Daily Log — ${ds}
+  return `# Diário — ${ds}
 
-← [[${prevMs}/${yesterday}|← Yesterday]] | [[${nextMs}/${tomorrow}|Tomorrow →]]
-[[../../monthly/${ms}|↑ ${monthName(d)} ${year}]]
+← [[${prevMs}/${yesterday}|← Ontem]] | [[${nextMs}/${tomorrow}|Amanhã →]]
+[[../../mensal/${ms}|↑ ${monthName(d)} ${year}]]
 
 ---
 
-## Recurring Tasks
+## Tarefas Recorrentes
 
 ${recurring}
 
 ---
 
-## Projects
+## Projetos
 
 ${projects}
 
 ---
 
-## Inherited from Yesterday
+## Herdado de Ontem
 
 ${inherited}
 
 ---
 
-## Events
+## Eventos
 
 - ○
 
 ---
 
-## Notes
+## Notas
 
 –
 
 ---
 
-*← [[../../../INDEX|Dashboard]] | [[../../monthly/${ms}|Monthly Log]]*
+*← [[../../../INDEX|Dashboard]] | [[../../mensal/${ms}|Log Mensal]]*
 `;
 }
 
@@ -191,104 +191,104 @@ function buildMonthlyLog(d: Date, projectsFolder: string): string {
     return `| ${label} | |`;
   }).join("\n");
 
-  return `# Monthly Log — ${name} ${year}
+  return `# Log Mensal — ${name} ${year}
 
-← [[${prevMs}|← Previous Month]] | [[${nextMs}|Next Month →]]
+← [[${prevMs}|← Mês anterior]] | [[${nextMs}|Próximo mês →]]
 
 ---
 
-## Event Calendar
+## Calendário de Eventos
 
-| Date | Event |
+| Data | Evento |
 |---|---|
 ${calendarRows}
 
 ---
 
-## Tasks & Projects This Month
+## Tarefas e Projetos do Mês
 
 - [ ]
 - [ ]
 
-### Active Projects
+### Projetos ativos
 
 - [[../../${projectsFolder}/|]]
 
 ---
 
-## Habits & Metrics
+## Hábitos e Métricas
 
-| Habit / Metric | Goal | Result |
+| Hábito / Métrica | Meta | Resultado |
 |---|---|---|
 | | | |
 
 ---
 
-## Migrated from Previous Month
+## Migrado do mês anterior
 
 - [ ]
 
 ---
 
-## Monthly Review
+## Revisão do Mês
 
-**What worked well?**
+**O que funcionou bem?**
 -
 
-**What didn't work?**
+**O que não funcionou?**
 -
 
-**What should I change?**
+**O que preciso mudar?**
 -
 
 ---
 
-*← [[../../INDEX|Dashboard]] | [[../../future/${year}-future|Future Log ${year}]]*
+*← [[../../INDEX|Dashboard]] | [[../../futuro/${year}-futuro|Log Futuro ${year}]]*
 `;
 }
 
 function buildFutureLog(year: string): string {
-  return `# Future Log — ${year}
+  return `# Log Futuro — ${year}
 
-> Events and tasks without a defined month, or more than one month away.
-> At the start of each month, migrate what's relevant to the Monthly Log.
+> Eventos e tarefas sem mês definido ou a mais de um mês de distância.
+> No início de cada mês, migre o que for pertinente para o Log Mensal.
 
 ---
 
-## January
+## Janeiro
 -
 
-## February
+## Fevereiro
 -
 
-## March
+## Março
 -
 
-## April
+## Abril
 -
 
-## May
+## Maio
 -
 
-## June
+## Junho
 -
 
-## July
+## Julho
 -
 
-## August
+## Agosto
 -
 
-## September
+## Setembro
 -
 
-## October
+## Outubro
 -
 
-## November
+## Novembro
 -
 
-## December
+## Dezembro
 -
 
 ---
@@ -299,17 +299,17 @@ function buildFutureLog(year: string): string {
 
 function buildCollection(name: string): string {
   const ds = dateStr(today());
-  return `# Collection — ${name}
+  return `# Coleção — ${name}
 
-**Created:** ${ds}
-
----
-
-> Describe in one line what you collect here.
+**Criada em:** ${ds}
 
 ---
 
-## List
+> Descreva em uma linha o que você coleciona aqui.
+
+---
+
+## Lista
 
 -
 -
@@ -322,29 +322,29 @@ function buildCollection(name: string): string {
 
 function buildProjectLog(name: string): string {
   const ds = dateStr(today());
-  return `# Project — ${name}
+  return `# Projeto — ${name}
 
-**Status:** \`Active\`
-**Started:** ${ds}
-**Deadline:** —
-
----
-
-## Description
-
-> What is this project? One line.
+**Status:** \`Ativo\`
+**Início:** ${ds}
+**Prazo:** —
 
 ---
 
-## Goal
+## Descrição
 
-> What problem needs to be solved?
+> O que é este projeto? Uma linha.
 
 ---
 
-## Active Tasks
+## Objetivo
 
-> These appear in daily logs. Keep it short — max 5 tasks at a time.
+> Que problema precisa ser resolvido?
+
+---
+
+## Tarefas Ativas
+
+> Aparecem nos logs diários. Máximo 5 tarefas por vez.
 
 - [ ]
 - [ ]
@@ -353,14 +353,14 @@ function buildProjectLog(name: string): string {
 
 ## Backlog
 
-> Everything you think could become a future task. No commitment.
+> Tudo que pode virar tarefa futura. Sem compromisso.
 
 - [ ]
 - [ ]
 
 ---
 
-## Notes & Context
+## Notas e Contexto
 
 -
 
@@ -372,23 +372,23 @@ function buildProjectLog(name: string): string {
 
 // ─── Plugin ───────────────────────────────────────────────────────────────────
 
-export default class JacksBulletPlugin extends Plugin {
-  settings: JacksBulletSettings;
+export default class JackJournalPlugin extends Plugin {
+  settings: JackJournalSettings;
 
   async onload() {
     await this.loadSettings();
 
-    this.addRibbonIcon("book-open", "Today's Log", async () => {
+    this.addRibbonIcon("book-open", "Diário de Hoje", async () => {
       await this.openOrCreateDailyLog(today());
     });
 
-    this.addRibbonIcon("folder-plus", "New Project", async () => {
+    this.addRibbonIcon("folder-plus", "Novo Projeto", async () => {
       new NewProjectModal(this.app, async (name) => {
         await this.createProjectLog(name);
       }).open();
     });
 
-    this.addRibbonIcon("library", "New Collection", async () => {
+    this.addRibbonIcon("library", "Nova Coleção", async () => {
       new NewCollectionModal(this.app, async (name) => {
         await this.createCollection(name);
       }).open();
@@ -396,25 +396,25 @@ export default class JacksBulletPlugin extends Plugin {
 
     this.addCommand({
       id: "open-today",
-      name: "Open today's log",
+      name: "Abrir diário de hoje",
       callback: async () => { await this.openOrCreateDailyLog(today()); },
     });
 
     this.addCommand({
       id: "new-monthly",
-      name: "New monthly log",
+      name: "Novo log mensal",
       callback: async () => { await this.openOrCreateMonthlyLog(today()); },
     });
 
     this.addCommand({
       id: "new-future",
-      name: "New future log",
+      name: "Novo log futuro",
       callback: async () => { await this.openOrCreateFutureLog(yearStr(today())); },
     });
 
     this.addCommand({
       id: "new-project",
-      name: "New project",
+      name: "Novo projeto",
       callback: async () => {
         new NewProjectModal(this.app, async (name) => {
           await this.createProjectLog(name);
@@ -424,19 +424,19 @@ export default class JacksBulletPlugin extends Plugin {
 
     this.addCommand({
       id: "open-index",
-      name: "Open Dashboard (INDEX)",
+      name: "Abrir Dashboard",
       callback: async () => { await this.openFile("INDEX.md"); },
     });
 
     this.addCommand({
       id: "edit-recurring",
-      name: "Edit recurring tasks",
+      name: "Editar tarefas recorrentes",
       callback: async () => { await this.openRecurringFile(); },
     });
 
     this.addCommand({
       id: "new-collection",
-      name: "New collection",
+      name: "Nova coleção",
       callback: async () => {
         new NewCollectionModal(this.app, async (name) => {
           await this.createCollection(name);
@@ -444,14 +444,12 @@ export default class JacksBulletPlugin extends Plugin {
       },
     });
 
-    this.addSettingTab(new JacksBulletSettingTab(this.app, this));
+    this.addSettingTab(new JackJournalSettingTab(this.app, this));
 
-    // garante que as pastas existem sempre que o plugin carrega
     if (this.settings.onboardingDone) {
       await this.initFolders();
     }
 
-    // monitora mudanças em arquivos de projeto e sincroniza com o daily de hoje
     this.registerEvent(
       this.app.vault.on("modify", async (file) => {
         if (file instanceof TFile &&
@@ -462,10 +460,10 @@ export default class JacksBulletPlugin extends Plugin {
       })
     );
 
-    // URL scheme: obsidian://jacks-bullet?action=daily
-    this.registerObsidianProtocolHandler("jacks-bullet", async (params) => {
-      if (params.action === "daily") await this.openOrCreateDailyLog(today());
-      if (params.action === "monthly") await this.openOrCreateMonthlyLog(today());
+    // URL scheme: obsidian://jack-journal?action=diario
+    this.registerObsidianProtocolHandler("jack-journal", async (params) => {
+      if (params.action === "diario") await this.openOrCreateDailyLog(today());
+      if (params.action === "mensal") await this.openOrCreateMonthlyLog(today());
       if (params.action === "index") await this.openFile("INDEX.md");
     });
 
@@ -506,9 +504,9 @@ export default class JacksBulletPlugin extends Plugin {
     }
   }
 
-  get dailyFolder() { return `${this.settings.logsFolder}/daily`; }
-  get monthlyFolder() { return `${this.settings.logsFolder}/monthly`; }
-  get futureFolder() { return `${this.settings.logsFolder}/future`; }
+  get dailyFolder() { return `${this.settings.logsFolder}/diario`; }
+  get monthlyFolder() { return `${this.settings.logsFolder}/mensal`; }
+  get futureFolder() { return `${this.settings.logsFolder}/futuro`; }
 
   // ─── Project tasks ─────────────────────────────────────────────────────────
 
@@ -516,18 +514,15 @@ export default class JacksBulletPlugin extends Plugin {
     const folder = this.app.vault.getAbstractFileByPath(this.settings.projectsFolder);
     if (!folder) return {};
 
-    const result: Record<string, string[]> = {};
     const files = this.app.vault.getFiles().filter(f =>
       f.path.startsWith(this.settings.projectsFolder + "/") && f.extension === "md"
     );
 
+    const result: Record<string, string[]> = {};
     for (const file of files) {
       const content = await this.app.vault.read(file);
       const tasks = this.extractActiveTasks(content);
-      if (tasks.length > 0) {
-        const projectName = file.basename;
-        result[projectName] = tasks;
-      }
+      if (tasks.length > 0) result[file.basename] = tasks;
     }
 
     return result;
@@ -539,7 +534,7 @@ export default class JacksBulletPlugin extends Plugin {
     let inActiveSection = false;
 
     for (const line of lines) {
-      if (/^## Active Tasks/.test(line)) { inActiveSection = true; continue; }
+      if (/^## Tarefas Ativas/.test(line)) { inActiveSection = true; continue; }
       if (inActiveSection && /^## /.test(line)) break;
       if (inActiveSection && /^- \[ \] .+/.test(line)) {
         tasks.push(line.replace(/^- \[ \] /, "").trim());
@@ -561,9 +556,8 @@ export default class JacksBulletPlugin extends Plugin {
     const projectTasks = await this.getActiveProjectTasks();
     const newSection = buildProjectsSection(projectTasks);
 
-    // substitui tudo entre "## Projects" e o próximo "---"
     const updated = content.replace(
-      /(## Projects\n)([\s\S]*?)(\n---)/,
+      /(## Projetos\n)([\s\S]*?)(\n---)/,
       `$1\n${newSection}\n$3`
     );
 
@@ -596,7 +590,7 @@ export default class JacksBulletPlugin extends Plugin {
     let file = this.app.vault.getAbstractFileByPath(path);
     if (!(file instanceof TFile)) {
       file = await this.createFile(path, buildRecurring());
-      new Notice("recurring.md created. Add your recurring tasks here.");
+      new Notice("recorrentes.md criado. Adicione suas tarefas recorrentes aqui.");
     }
     await this.app.workspace.getLeaf(false).openFile(file as TFile);
   }
@@ -618,7 +612,7 @@ export default class JacksBulletPlugin extends Plugin {
       ]);
       const content = buildDailyLog(d, recurring, migrated, projectTasks);
       file = await this.createFile(path, content);
-      new Notice(`Daily log for ${ds} created.`);
+      new Notice(`Diário de ${ds} criado.`);
     }
 
     await this.app.workspace.getLeaf(false).openFile(file as TFile);
@@ -634,7 +628,7 @@ export default class JacksBulletPlugin extends Plugin {
     if (!(file instanceof TFile)) {
       const content = buildMonthlyLog(d, this.settings.projectsFolder);
       file = await this.createFile(path, content);
-      new Notice(`Monthly log ${ms} created.`);
+      new Notice(`Log mensal ${ms} criado.`);
     }
 
     await this.app.workspace.getLeaf(false).openFile(file as TFile);
@@ -642,14 +636,14 @@ export default class JacksBulletPlugin extends Plugin {
   }
 
   async openOrCreateFutureLog(year: string): Promise<TFile> {
-    const path = `${this.futureFolder}/${year}-future.md`;
+    const path = `${this.futureFolder}/${year}-futuro.md`;
 
     let file = this.app.vault.getAbstractFileByPath(path);
 
     if (!(file instanceof TFile)) {
       const content = buildFutureLog(year);
       file = await this.createFile(path, content);
-      new Notice(`Future Log ${year} created.`);
+      new Notice(`Log Futuro ${year} criado.`);
     }
 
     await this.app.workspace.getLeaf(false).openFile(file as TFile);
@@ -658,9 +652,9 @@ export default class JacksBulletPlugin extends Plugin {
 
   async initFolders() {
     await this.ensureFolder(this.settings.logsFolder);
-    await this.ensureFolder(`${this.settings.logsFolder}/daily`);
-    await this.ensureFolder(`${this.settings.logsFolder}/monthly`);
-    await this.ensureFolder(`${this.settings.logsFolder}/future`);
+    await this.ensureFolder(`${this.settings.logsFolder}/diario`);
+    await this.ensureFolder(`${this.settings.logsFolder}/mensal`);
+    await this.ensureFolder(`${this.settings.logsFolder}/futuro`);
     await this.ensureFolder(this.settings.projectsFolder);
     await this.ensureFolder(this.settings.collectionsFolder);
   }
@@ -670,16 +664,15 @@ export default class JacksBulletPlugin extends Plugin {
     const path = `${this.settings.collectionsFolder}/${slug}.md`;
 
     let file = this.app.vault.getAbstractFileByPath(path);
-
     if (file instanceof TFile) {
-      new Notice(`Collection "${name}" already exists.`);
+      new Notice(`Coleção "${name}" já existe.`);
       await this.app.workspace.getLeaf(false).openFile(file);
       return file;
     }
 
     const content = buildCollection(name);
     file = await this.createFile(path, content);
-    new Notice(`Collection "${name}" created.`);
+    new Notice(`Coleção "${name}" criada.`);
     await this.app.workspace.getLeaf(false).openFile(file as TFile);
     return file as TFile;
   }
@@ -689,16 +682,15 @@ export default class JacksBulletPlugin extends Plugin {
     const path = `${this.settings.projectsFolder}/${slug}.md`;
 
     let file = this.app.vault.getAbstractFileByPath(path);
-
     if (file instanceof TFile) {
-      new Notice(`Project "${name}" already exists.`);
+      new Notice(`Projeto "${name}" já existe.`);
       await this.app.workspace.getLeaf(false).openFile(file);
       return file;
     }
 
     const content = buildProjectLog(name);
     file = await this.createFile(path, content);
-    new Notice(`Project "${name}" created.`);
+    new Notice(`Projeto "${name}" criado.`);
     await this.app.workspace.getLeaf(false).openFile(file as TFile);
     return file as TFile;
   }
@@ -720,7 +712,7 @@ export default class JacksBulletPlugin extends Plugin {
     let inRecurring = false;
 
     for (const line of lines) {
-      if (line.includes("## Recurring Tasks")) { inRecurring = true; continue; }
+      if (line.includes("## Tarefas Recorrentes")) { inRecurring = true; continue; }
       if (inRecurring && line.startsWith("## ")) inRecurring = false;
       if (!inRecurring && /^- \[ \] .+/.test(line)) {
         tasks.push(line.replace(/^- \[ \] /, "").trim());
@@ -744,11 +736,11 @@ export default class JacksBulletPlugin extends Plugin {
 // ─── Onboarding Modal ─────────────────────────────────────────────────────────
 
 class OnboardingModal extends Modal {
-  plugin: JacksBulletPlugin;
+  plugin: JackJournalPlugin;
   step: number = 0;
   userName: string = "";
 
-  constructor(app: App, plugin: JacksBulletPlugin) {
+  constructor(app: App, plugin: JackJournalPlugin) {
     super(app);
     this.plugin = plugin;
   }
@@ -770,29 +762,28 @@ class OnboardingModal extends Modal {
     steps[this.step]();
   }
 
-  // Passo 0 — Boas-vindas + nome
   renderStep0() {
     const { contentEl } = this;
 
-    contentEl.createEl("h2", { text: "Welcome to Jacks Bullet" });
-    contentEl.createEl("p", { text: "A Bullet Journal system for Obsidian. Let's set everything up in under 2 minutes." });
-    contentEl.createEl("p", { text: "You'll create your Future Log, Monthly Log, first Daily Log, and set up your recurring tasks." });
+    contentEl.createEl("h2", { text: "Bem-vindo ao Jack Journal" });
+    contentEl.createEl("p", { text: "Um sistema de Bullet Journal para o Obsidian. Vamos configurar tudo em menos de 2 minutos." });
+    contentEl.createEl("p", { text: "Você vai criar seu Log Futuro, Log Mensal e primeiro Diário — e configurar suas tarefas recorrentes." });
 
-    const nameLabel = contentEl.createEl("p", { text: "What's your name?" });
+    const nameLabel = contentEl.createEl("p", { text: "Como posso te chamar?" });
     nameLabel.style.marginTop = "16px";
     nameLabel.style.fontWeight = "600";
 
-    const input = contentEl.createEl("input", { type: "text", placeholder: "Your name" });
+    const input = contentEl.createEl("input", { type: "text", placeholder: "Seu nome" });
     input.style.cssText = "width:100%;padding:8px;margin-top:8px;border-radius:4px;border:1px solid var(--background-modifier-border);background:var(--background-primary);color:var(--text-normal);";
     input.value = this.userName;
     input.addEventListener("input", (e) => { this.userName = (e.target as HTMLInputElement).value; });
 
     const btn = new ButtonComponent(contentEl);
-    btn.setButtonText("Get started →");
+    btn.setButtonText("Começar →");
     btn.setCta();
     btn.buttonEl.style.marginTop = "16px";
     btn.onClick(async () => {
-      const name = this.userName.trim() || "My";
+      const name = this.userName.trim() || "Meu";
       this.plugin.settings.userName = name;
 
       const folders = defaultFolders(name);
@@ -801,8 +792,6 @@ class OnboardingModal extends Modal {
       this.plugin.settings.collectionsFolder = folders.collectionsFolder;
       this.plugin.settings.recurringFile = folders.recurringFile;
       await this.plugin.saveSettings();
-
-      // cria todas as pastas imediatamente
       await this.plugin.initFolders();
 
       this.step = 1;
@@ -810,20 +799,19 @@ class OnboardingModal extends Modal {
     });
   }
 
-  // Passo 1 — Recurring tasks
   renderStep1() {
     const { contentEl } = this;
     const name = this.plugin.settings.userName;
 
-    contentEl.createEl("h2", { text: "Step 1 of 5 — Recurring Tasks" });
-    contentEl.createEl("p", { text: `${name}, recurring tasks are things you do every day — exercise, review email, journal, etc.` });
-    contentEl.createEl("p", { text: "They're stored in a single file (recurring.md) and automatically added to every daily log." });
+    contentEl.createEl("h2", { text: "Passo 1 de 5 — Tarefas Recorrentes" });
+    contentEl.createEl("p", { text: `${name}, tarefas recorrentes são coisas que você faz todo dia — exercício, leitura, oração, etc.` });
+    contentEl.createEl("p", { text: "Ficam salvas em um único arquivo (recorrentes.md) e são adicionadas automaticamente em cada diário." });
 
-    const note = contentEl.createEl("p", { text: "→ Let's create your recurring tasks file. You can edit it anytime." });
+    const note = contentEl.createEl("p", { text: "→ Vamos criar seu arquivo de tarefas recorrentes. Você pode editar quando quiser." });
     note.style.cssText = "background:var(--background-secondary);padding:12px;border-radius:6px;margin-top:12px;";
 
     const btn = new ButtonComponent(contentEl);
-    btn.setButtonText("Create recurring.md");
+    btn.setButtonText("Criar recorrentes.md");
     btn.setCta();
     btn.buttonEl.style.marginTop = "16px";
     btn.onClick(async () => {
@@ -833,21 +821,20 @@ class OnboardingModal extends Modal {
     });
   }
 
-  // Passo 2 — Future Log
   renderStep2() {
     const { contentEl } = this;
     const name = this.plugin.settings.userName;
     const year = yearStr(today());
 
-    contentEl.createEl("h2", { text: "Step 2 of 5 — Future Log" });
-    contentEl.createEl("p", { text: `The Future Log is your yearly calendar, ${name}. Events and tasks more than a month away live here.` });
-    contentEl.createEl("p", { text: "At the start of each month, migrate what's relevant to the Monthly Log." });
+    contentEl.createEl("h2", { text: "Passo 2 de 5 — Log Futuro" });
+    contentEl.createEl("p", { text: `O Log Futuro é seu calendário anual, ${name}. Aqui ficam eventos e tarefas a mais de um mês de distância.` });
+    contentEl.createEl("p", { text: "No início de cada mês, migre o que for pertinente para o Log Mensal." });
 
-    const note = contentEl.createEl("p", { text: `→ Let's create the Future Log for ${year}.` });
+    const note = contentEl.createEl("p", { text: `→ Vamos criar o Log Futuro de ${year}.` });
     note.style.cssText = "background:var(--background-secondary);padding:12px;border-radius:6px;margin-top:12px;";
 
     const btn = new ButtonComponent(contentEl);
-    btn.setButtonText(`Create Future Log ${year}`);
+    btn.setButtonText(`Criar Log Futuro ${year}`);
     btn.setCta();
     btn.buttonEl.style.marginTop = "16px";
     btn.onClick(async () => {
@@ -857,7 +844,6 @@ class OnboardingModal extends Modal {
     });
   }
 
-  // Passo 3 — Log Mensal
   renderStep3() {
     const { contentEl } = this;
     const d = today();
@@ -865,15 +851,15 @@ class OnboardingModal extends Modal {
     const name = monthName(d);
     const year = yearStr(d);
 
-    contentEl.createEl("h2", { text: "Step 3 of 5 — Monthly Log" });
-    contentEl.createEl("p", { text: "The Monthly Log has the event calendar, your tasks and projects, habits to track, and space for a monthly review." });
-    contentEl.createEl("p", { text: "At the start of each month, create a new one and migrate pending tasks from the previous month." });
+    contentEl.createEl("h2", { text: "Passo 3 de 5 — Log Mensal" });
+    contentEl.createEl("p", { text: "O Log Mensal tem o calendário do mês, tarefas e projetos, hábitos e espaço para revisão no final do mês." });
+    contentEl.createEl("p", { text: "No início de cada mês, crie um novo e migre as tarefas pendentes do mês anterior." });
 
-    const note = contentEl.createEl("p", { text: `→ Let's create the Monthly Log for ${name} ${year}.` });
+    const note = contentEl.createEl("p", { text: `→ Vamos criar o Log Mensal de ${name} ${year}.` });
     note.style.cssText = "background:var(--background-secondary);padding:12px;border-radius:6px;margin-top:12px;";
 
     const btn = new ButtonComponent(contentEl);
-    btn.setButtonText(`Create Monthly Log — ${ms}`);
+    btn.setButtonText(`Criar Log Mensal — ${ms}`);
     btn.setCta();
     btn.buttonEl.style.marginTop = "16px";
     btn.onClick(async () => {
@@ -883,28 +869,27 @@ class OnboardingModal extends Modal {
     });
   }
 
-  // Passo 4 — Log Diário
   renderStep4() {
     const { contentEl } = this;
     const d = today();
     const ds = dateStr(d);
 
-    contentEl.createEl("h2", { text: "Step 4 of 5 — Daily Log" });
-    contentEl.createEl("p", { text: "The Daily Log is the heart of the system. Open it every day to track tasks, events, and notes." });
+    contentEl.createEl("h2", { text: "Passo 4 de 5 — Diário" });
+    contentEl.createEl("p", { text: "O Diário é o coração do sistema. Abra todo dia para registrar tarefas, eventos e notas." });
 
     const list = contentEl.createEl("ul");
     [
-      "Recurring tasks — pulled automatically from recurring.md",
-      "Project tasks — only active tasks, no backlog",
-      "Inherited from yesterday — pending tasks carried over",
-      "Events and free notes",
+      "Tarefas recorrentes — puxadas automaticamente de recorrentes.md",
+      "Tarefas de projetos — só as tarefas ativas, sem backlog",
+      "Herdado de ontem — tarefas pendentes do dia anterior",
+      "Eventos e notas livres",
     ].forEach((item) => list.createEl("li", { text: item }));
 
-    const note = contentEl.createEl("p", { text: `→ Let's create today's log (${ds}).` });
+    const note = contentEl.createEl("p", { text: `→ Vamos criar o diário de hoje (${ds}).` });
     note.style.cssText = "background:var(--background-secondary);padding:12px;border-radius:6px;margin-top:12px;";
 
     const btn = new ButtonComponent(contentEl);
-    btn.setButtonText(`Create Today's Log — ${ds}`);
+    btn.setButtonText(`Criar Diário de Hoje — ${ds}`);
     btn.setCta();
     btn.buttonEl.style.marginTop = "16px";
     btn.onClick(async () => {
@@ -914,20 +899,19 @@ class OnboardingModal extends Modal {
     });
   }
 
-  // Passo 5 — Conclusão e rotina
   renderStep5() {
     const { contentEl } = this;
     const name = this.plugin.settings.userName;
 
-    contentEl.createEl("h2", { text: `All set, ${name}!` });
-    contentEl.createEl("p", { text: "Your system is ready. The routine is simple:" });
+    contentEl.createEl("h2", { text: `Pronto, ${name}!` });
+    contentEl.createEl("p", { text: "Seu sistema está configurado. A rotina é simples:" });
 
     const cards = [
-      { emoji: "☀️", title: "Every day", text: "Open today's log (book icon in the sidebar or Cmd+P → \"Open today's log\"). Log tasks, events, and notes." },
-      { emoji: "📅", title: "Every month", text: "Create the new Monthly Log, migrate pending tasks, and review the previous month." },
-      { emoji: "📋", title: "New projects", text: "Cmd+P → \"New project\". Add active tasks to your daily log." },
-      { emoji: "🔮", title: "Far-off things", text: "Log in Future Log. Migrate to monthly at the start of each month." },
-      { emoji: "🔁", title: "Recurring tasks", text: "Edit recurring.md once (Cmd+P → \"Edit recurring tasks\"). They appear in every daily log automatically." },
+      { emoji: "☀️", title: "Todo dia", text: "Abra o diário (ícone do livro na barra lateral ou Cmd+P → \"Abrir diário de hoje\"). Registre tarefas, eventos e notas." },
+      { emoji: "📅", title: "Todo mês", text: "Crie o Log Mensal do novo mês, migre tarefas pendentes e revise o mês anterior." },
+      { emoji: "📋", title: "Novos projetos", text: "Cmd+P → \"Novo projeto\". As tarefas ativas aparecem automaticamente no diário." },
+      { emoji: "🔮", title: "Coisas distantes", text: "Anote no Log Futuro. No começo do mês, migre para o mensal." },
+      { emoji: "🔁", title: "Tarefas recorrentes", text: "Edite recorrentes.md uma vez (Cmd+P → \"Editar tarefas recorrentes\"). Aparecem em cada diário automaticamente." },
     ];
 
     cards.forEach(({ emoji, title, text }) => {
@@ -938,7 +922,7 @@ class OnboardingModal extends Modal {
     });
 
     const btn = new ButtonComponent(contentEl);
-    btn.setButtonText("Start using →");
+    btn.setButtonText("Começar a usar →");
     btn.setCta();
     btn.buttonEl.style.marginTop = "20px";
     btn.onClick(async () => {
@@ -963,22 +947,22 @@ class NewProjectModal extends Modal {
 
   onOpen() {
     const { contentEl } = this;
-    contentEl.createEl("h2", { text: "New Project" });
+    contentEl.createEl("h2", { text: "Novo Projeto" });
 
     new Setting(contentEl)
-      .setName("Project name")
+      .setName("Nome do projeto")
       .addText((text) => {
-        text.setPlaceholder("e.g. Company website");
+        text.setPlaceholder("ex: Site da empresa X");
         text.onChange((value) => { this.projectName = value; });
         setTimeout(() => text.inputEl.focus(), 50);
       });
 
     new Setting(contentEl).addButton((btn) => {
-      btn.setButtonText("Create project");
+      btn.setButtonText("Criar projeto");
       btn.setCta();
       btn.onClick(() => {
         if (!this.projectName.trim()) {
-          new Notice("Enter a project name.");
+          new Notice("Digite um nome para o projeto.");
           return;
         }
         this.close();
@@ -1003,22 +987,22 @@ class NewCollectionModal extends Modal {
 
   onOpen() {
     const { contentEl } = this;
-    contentEl.createEl("h2", { text: "New Collection" });
+    contentEl.createEl("h2", { text: "Nova Coleção" });
 
     new Setting(contentEl)
-      .setName("Collection name")
+      .setName("Nome da coleção")
       .addText((text) => {
-        text.setPlaceholder("e.g. Books to Read");
+        text.setPlaceholder("ex: Livros para ler");
         text.onChange((value) => { this.collectionName = value; });
         setTimeout(() => text.inputEl.focus(), 50);
       });
 
     new Setting(contentEl).addButton((btn) => {
-      btn.setButtonText("Create collection");
+      btn.setButtonText("Criar coleção");
       btn.setCta();
       btn.onClick(() => {
         if (!this.collectionName.trim()) {
-          new Notice("Enter a collection name.");
+          new Notice("Digite um nome para a coleção.");
           return;
         }
         this.close();
@@ -1032,10 +1016,10 @@ class NewCollectionModal extends Modal {
 
 // ─── Settings Tab ─────────────────────────────────────────────────────────────
 
-class JacksBulletSettingTab extends PluginSettingTab {
-  plugin: JacksBulletPlugin;
+class JackJournalSettingTab extends PluginSettingTab {
+  plugin: JackJournalPlugin;
 
-  constructor(app: App, plugin: JacksBulletPlugin) {
+  constructor(app: App, plugin: JackJournalPlugin) {
     super(app, plugin);
     this.plugin = plugin;
   }
@@ -1043,11 +1027,11 @@ class JacksBulletSettingTab extends PluginSettingTab {
   display() {
     const { containerEl } = this;
     containerEl.empty();
-    containerEl.createEl("h2", { text: "Jacks Bullet" });
+    containerEl.createEl("h2", { text: "Jack Journal" });
 
     new Setting(containerEl)
-      .setName("Logs folder")
-      .setDesc("Contains daily, monthly and future subfolders.")
+      .setName("Pasta dos logs")
+      .setDesc("Contém as subpastas diario, mensal e futuro.")
       .addText((t) => {
         t.setValue(this.plugin.settings.logsFolder);
         t.onChange(async (v) => {
@@ -1057,7 +1041,7 @@ class JacksBulletSettingTab extends PluginSettingTab {
       });
 
     new Setting(containerEl)
-      .setName("Projects folder")
+      .setName("Pasta dos projetos")
       .addText((t) => {
         t.setValue(this.plugin.settings.projectsFolder);
         t.onChange(async (v) => {
@@ -1067,7 +1051,7 @@ class JacksBulletSettingTab extends PluginSettingTab {
       });
 
     new Setting(containerEl)
-      .setName("Collections folder")
+      .setName("Pasta das coleções")
       .addText((t) => {
         t.setValue(this.plugin.settings.collectionsFolder);
         t.onChange(async (v) => {
@@ -1077,8 +1061,7 @@ class JacksBulletSettingTab extends PluginSettingTab {
       });
 
     new Setting(containerEl)
-      .setName("Recurring tasks file")
-      .setDesc("File where recurring tasks are stored.")
+      .setName("Arquivo de tarefas recorrentes")
       .addText((t) => {
         t.setValue(this.plugin.settings.recurringFile);
         t.onChange(async (v) => {
@@ -1088,10 +1071,10 @@ class JacksBulletSettingTab extends PluginSettingTab {
       });
 
     new Setting(containerEl)
-      .setName("Restart onboarding")
-      .setDesc("Reopens the setup guide.")
+      .setName("Refazer configuração inicial")
+      .setDesc("Reabre o guia de setup.")
       .addButton((btn) => {
-        btn.setButtonText("Open onboarding");
+        btn.setButtonText("Abrir onboarding");
         btn.onClick(() => {
           this.plugin.settings.onboardingDone = false;
           this.plugin.saveSettings();
