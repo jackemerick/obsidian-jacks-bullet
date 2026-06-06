@@ -1,166 +1,175 @@
-var w=Object.defineProperty;var L=Object.getOwnPropertyDescriptor;var T=Object.getOwnPropertyNames;var C=Object.prototype.hasOwnProperty;var S=(o,t)=>{for(var e in t)w(o,e,{get:t[e],enumerable:!0})},j=(o,t,e,s)=>{if(t&&typeof t=="object"||typeof t=="function")for(let a of T(t))!C.call(o,a)&&a!==e&&w(o,a,{get:()=>t[a],enumerable:!(s=L(t,a))||s.enumerable});return o};var N=o=>j(w({},"__esModule",{value:!0}),o);var R={};S(R,{default:()=>F});module.exports=N(R);var n=require("obsidian"),P={userName:"",onboardingDone:!1,dailyFolder:"logs/daily",monthlyFolder:"logs/monthly",futureFolder:"logs/future",projectsFolder:"logs/projects",collectionsFolder:"collections"};function g(){return new Date}function y(o){return String(o).padStart(2,"0")}function h(o){return`${o.getFullYear()}-${y(o.getMonth()+1)}-${y(o.getDate())}`}function d(o){return`${o.getFullYear()}-${y(o.getMonth()+1)}`}function f(o){return String(o.getFullYear())}function m(o,t){let e=new Date(o);return e.setDate(e.getDate()+t),e}function $(o,t){let e=new Date(o);return e.setMonth(e.getMonth()+t),e}var M=["Janeiro","Fevereiro","Mar\xE7o","Abril","Maio","Junho","Julho","Agosto","Setembro","Outubro","Novembro","Dezembro"];function E(o){return M[o.getMonth()]}function k(o){return new Date(o.getFullYear(),o.getMonth()+1,0).getDate()}function A(o,t){let e=h(o),s=d(o),a=f(o),i=h(m(o,-1)),r=h(m(o,1)),l=d(m(o,-1)),c=d(m(o,1)),u=t.length>0?t.map(p=>`- [>] ${p}`).join(`
-`):"- [ ] ";return`# Log Di\xE1rio \u2014 ${e}
+var k=Object.defineProperty;var L=Object.getOwnPropertyDescriptor;var D=Object.getOwnPropertyNames;var C=Object.prototype.hasOwnProperty;var S=(s,n)=>{for(var t in n)k(s,t,{get:n[t],enumerable:!0})},M=(s,n,t,e)=>{if(n&&typeof n=="object"||typeof n=="function")for(let r of D(n))!C.call(s,r)&&r!==t&&k(s,r,{get:()=>n[r],enumerable:!(e=L(n,r))||e.enumerable});return s};var j=s=>M(k({},"__esModule",{value:!0}),s);var Y={};S(Y,{default:()=>b});module.exports=j(Y);var i=require("obsidian");function N(s){let n=s||"My";return{logsFolder:`${n}'s Logs`,projectsFolder:`${n}'s Projects`,collectionsFolder:`${n}'s Collections`,recurringFile:`${n}'s Logs/recurring.md`}}var P={userName:"",onboardingDone:!1,logsFolder:"logs",projectsFolder:"projects",collectionsFolder:"collections",recurringFile:"logs/recurring.md"};function h(){return new Date}function f(s){return String(s).padStart(2,"0")}function m(s){return`${s.getFullYear()}-${f(s.getMonth()+1)}-${f(s.getDate())}`}function g(s){return`${s.getFullYear()}-${f(s.getMonth()+1)}`}function F(s){return String(s.getFullYear())}function y(s,n){let t=new Date(s);return t.setDate(t.getDate()+n),t}function T(s,n){let t=new Date(s);return t.setMonth(t.getMonth()+n),t}var A=["Janeiro","Fevereiro","Mar\xE7o","Abril","Maio","Junho","Julho","Agosto","Setembro","Outubro","Novembro","Dezembro"];function $(s){return A[s.getMonth()]}function B(s){return new Date(s.getFullYear(),s.getMonth()+1,0).getDate()}function O(){return`# Recurring Tasks
 
-\u2190 [[${l}/${i}|\u2190 Ontem]] | [[${c}/${r}|Amanh\xE3 \u2192]]
-[[../../monthly/${s}|\u2191 ${E(o)} ${a}]]
+> Add one task per line below. These will be automatically included in every daily log.
+> Use plain text \u2014 no checkboxes needed here.
+
+-
+-
+`}function R(s,n,t){let e=m(s),r=g(s),a=F(s),o=m(y(s,-1)),l=m(y(s,1)),c=g(y(s,-1)),u=g(y(s,1)),p=n.length>0?n.map(x=>`- [ ] ${x}`).join(`
+`):"- [ ] ",d=t.length>0?t.map(x=>`- [>] ${x}`).join(`
+`):"- [ ] ";return`# Daily Log \u2014 ${e}
+
+\u2190 [[${c}/${o}|\u2190 Yesterday]] | [[${u}/${l}|Tomorrow \u2192]]
+[[../../monthly/${r}|\u2191 ${$(s)} ${a}]]
 
 ---
 
-## Tarefas Recorrentes
+## Recurring Tasks
+
+${p}
+
+---
+
+## Projects
+
+> Active tasks (not backlog) from each ongoing project.
 
 - [ ]
-- [ ]
 
 ---
 
-## Projetos
+## Inherited from Yesterday
 
-> Tarefas ativas de cada projeto em andamento.
-
-- [ ]
+${d}
 
 ---
 
-## Herdado de Ontem
-
-${u}
-
----
-
-## Eventos
+## Events
 
 - \u25CB
 
 ---
 
-## Notas
+## Notes
 
 \u2013
 
 ---
 
-*\u2190 [[../../../INDEX|Dashboard]] | [[../../monthly/${s}|Log Mensal]]*
-`}function B(o){let t=d(o),e=f(o),s=E(o),a=d($(o,-1)),i=d($(o,1)),r=k(o),l=Array.from({length:r},(c,u)=>{let p=y(u+1);return`| ${e}-${y(o.getMonth()+1)}-${p} | |`}).join(`
-`);return`# Log Mensal \u2014 ${s} ${e}
+*\u2190 [[../../../INDEX|Dashboard]] | [[../../monthly/${r}|Monthly Log]]*
+`}function I(s,n){let t=g(s),e=F(s),r=$(s),a=g(T(s,-1)),o=g(T(s,1)),l=B(s),c=Array.from({length:l},(u,p)=>{let d=f(p+1);return`| ${e}-${f(s.getMonth()+1)}-${d} | |`}).join(`
+`);return`# Monthly Log \u2014 ${r} ${e}
 
-\u2190 [[${a}|\u2190 M\xEAs anterior]] | [[${i}|Pr\xF3ximo m\xEAs \u2192]]
+\u2190 [[${a}|\u2190 Previous Month]] | [[${o}|Next Month \u2192]]
 
 ---
 
-## Calend\xE1rio de Eventos
+## Event Calendar
 
-| Data | Evento |
+| Date | Event |
 |---|---|
-${l}
+${c}
 
 ---
 
-## Tarefas e Projetos do M\xEAs
+## Tasks & Projects This Month
 
 - [ ]
 - [ ]
 
-### Projetos ativos este m\xEAs
+### Active Projects
 
-- [[../../projects/|]]
+- [[../../${n}/|]]
 
 ---
 
-## H\xE1bitos e M\xE9tricas
+## Habits & Metrics
 
-| H\xE1bito / M\xE9trica | Meta | Resultado |
+| Habit / Metric | Goal | Result |
 |---|---|---|
 | | | |
 
 ---
 
-## Migrado do m\xEAs anterior
+## Migrated from Previous Month
 
 - [ ]
 
 ---
 
-## Revis\xE3o do M\xEAs
+## Monthly Review
 
-**O que funcionou bem?**
+**What worked well?**
 -
 
-**O que n\xE3o funcionou?**
+**What didn't work?**
 -
 
-**O que preciso mudar ou ajustar?**
+**What should I change?**
 -
 
 ---
 
 *\u2190 [[../../INDEX|Dashboard]] | [[../../future/${e}-future|Future Log ${e}]]*
-`}function O(o){return`# Future Log \u2014 ${o}
+`}function J(s){return`# Future Log \u2014 ${s}
 
-> Eventos e tarefas que ainda n\xE3o t\xEAm m\xEAs certo ou est\xE3o a 2+ meses de dist\xE2ncia.
-> Quando o m\xEAs chegar, migre para o Log Mensal correspondente.
+> Events and tasks without a defined month, or more than one month away.
+> At the start of each month, migrate what's relevant to the Monthly Log.
 
 ---
 
-## Janeiro
+## January
 -
 
-## Fevereiro
+## February
 -
 
-## Mar\xE7o
+## March
 -
 
-## Abril
+## April
 -
 
-## Maio
+## May
 -
 
-## Junho
+## June
 -
 
-## Julho
+## July
 -
 
-## Agosto
+## August
 -
 
-## Setembro
+## September
 -
 
-## Outubro
+## October
 -
 
-## Novembro
+## November
 -
 
-## Dezembro
+## December
 -
 
 ---
 
 *\u2190 [[../../INDEX|Dashboard]]*
-`}function J(o){let t=h(g());return`# Projeto \u2014 ${o}
+`}function W(s){let n=m(h());return`# Project \u2014 ${s}
 
-**Status:** \`Ativo\`
-**In\xEDcio:** ${t}
+**Status:** \`Active\`
+**Started:** ${n}
 **Deadline:** \u2014
 
 ---
 
-## Descri\xE7\xE3o
+## Description
 
-> O que \xE9 este projeto? Uma linha.
-
----
-
-## Objetivo
-
-> Que problema precisa ser resolvido?
+> What is this project? One line.
 
 ---
 
-## Tarefas em Execu\xE7\xE3o
+## Goal
+
+> What problem needs to be solved?
+
+---
+
+## Active Tasks
+
+> These appear in daily logs. Keep it short \u2014 max 5 tasks at a time.
 
 - [ ]
 - [ ]
@@ -169,17 +178,20 @@ ${l}
 
 ## Backlog
 
+> Everything you think could become a future task. No commitment.
+
 - [ ]
 - [ ]
 
 ---
 
-## Notas e Contexto
+## Notes & Context
 
 -
 
 ---
 
-*\u2190 [[../../INDEX|Dashboard]]*
-`}var F=class extends n.Plugin{async onload(){await this.loadSettings(),this.addRibbonIcon("book-open","Log de Hoje",async()=>{await this.openOrCreateDailyLog(g())}),this.addCommand({id:"open-today",name:"Abrir log de hoje",callback:async()=>{await this.openOrCreateDailyLog(g())}}),this.addCommand({id:"new-monthly",name:"Novo log mensal",callback:async()=>{await this.openOrCreateMonthlyLog(g())}}),this.addCommand({id:"new-future",name:"Novo future log",callback:async()=>{await this.openOrCreateFutureLog(f(g()))}}),this.addCommand({id:"new-project",name:"Novo projeto",callback:async()=>{new v(this.app,async t=>{await this.createProjectLog(t)}).open()}}),this.addCommand({id:"open-index",name:"Abrir Dashboard (INDEX)",callback:async()=>{await this.openFile("INDEX.md")}}),this.addSettingTab(new D(this.app,this)),this.settings.onboardingDone||setTimeout(()=>{new x(this.app,this).open()},800)}async ensureFolder(t){this.app.vault.getAbstractFileByPath(t)||await this.app.vault.createFolder(t)}async createFile(t,e){return await this.ensureFolder(t.substring(0,t.lastIndexOf("/"))),await this.app.vault.create(t,e)}async openFile(t){let e=this.app.vault.getAbstractFileByPath(t);e instanceof n.TFile&&await this.app.workspace.getLeaf(!1).openFile(e)}async openOrCreateDailyLog(t){let e=d(t),s=h(t),a=`${this.settings.dailyFolder}/${e}/${s}.md`,i=this.app.vault.getAbstractFileByPath(a);if(!(i instanceof n.TFile)){let r=await this.getMigratedTasks(t),l=A(t,r);i=await this.createFile(a,l),new n.Notice(`Log de ${s} criado.`)}return await this.app.workspace.getLeaf(!1).openFile(i),i}async openOrCreateMonthlyLog(t){let e=d(t),s=`${this.settings.monthlyFolder}/${e}.md`,a=this.app.vault.getAbstractFileByPath(s);if(!(a instanceof n.TFile)){let i=B(t);a=await this.createFile(s,i),new n.Notice(`Log mensal ${e} criado.`)}return await this.app.workspace.getLeaf(!1).openFile(a),a}async openOrCreateFutureLog(t){let e=`${this.settings.futureFolder}/${t}-future.md`,s=this.app.vault.getAbstractFileByPath(e);if(!(s instanceof n.TFile)){let a=O(t);s=await this.createFile(e,a),new n.Notice(`Future Log ${t} criado.`)}return await this.app.workspace.getLeaf(!1).openFile(s),s}async createProjectLog(t){let e=t.toLowerCase().replace(/\s+/g,"-").replace(/[^\w-]/g,""),s=`${this.settings.projectsFolder}/${e}.md`,a=this.app.vault.getAbstractFileByPath(s);if(a instanceof n.TFile)return new n.Notice(`Projeto "${t}" j\xE1 existe.`),await this.app.workspace.getLeaf(!1).openFile(a),a;let i=J(t);return a=await this.createFile(s,i),new n.Notice(`Projeto "${t}" criado.`),await this.app.workspace.getLeaf(!1).openFile(a),a}async getMigratedTasks(t){let e=m(t,-1),s=d(e),a=h(e),i=`${this.settings.dailyFolder}/${s}/${a}.md`,r=this.app.vault.getAbstractFileByPath(i);if(!(r instanceof n.TFile))return[];let l=await this.app.vault.read(r),c=[],u=l.split(`
-`),p=!1;for(let b of u){if(b.includes("## Tarefas Recorrentes")){p=!0;continue}p&&b.startsWith("## ")&&(p=!1),!p&&/^- \[ \] .+/.test(b)&&c.push(b.replace(/^- \[ \] /,"").trim())}return c}async loadSettings(){this.settings=Object.assign({},P,await this.loadData())}async saveSettings(){await this.saveData(this.settings)}},x=class extends n.Modal{constructor(e,s){super(e);this.step=0;this.userName="";this.plugin=s}onOpen(){this.renderStep()}onClose(){this.contentEl.empty()}renderStep(){let{contentEl:e}=this;e.empty(),[this.renderStep0.bind(this),this.renderStep1.bind(this),this.renderStep2.bind(this),this.renderStep3.bind(this),this.renderStep4.bind(this)][this.step]()}renderStep0(){let{contentEl:e}=this;e.createEl("h2",{text:"Bem-vindo ao Jacks Bullet"}),e.createEl("p",{text:"Um sistema de Bullet Journal para o Obsidian. Vamos configurar tudo em menos de 2 minutos."}),e.createEl("p",{text:"Voc\xEA vai criar seu Future Log, Log Mensal e primeiro Log Di\xE1rio \u2014 e aprender a rotina do sistema."});let s=e.createEl("p",{text:"Como posso te chamar?"});s.style.marginTop="16px",s.style.fontWeight="600";let a=e.createEl("input",{type:"text",placeholder:"Seu nome"});a.style.width="100%",a.style.padding="8px",a.style.marginTop="8px",a.style.borderRadius="4px",a.style.border="1px solid var(--background-modifier-border)",a.style.background="var(--background-primary)",a.style.color="var(--text-normal)",a.value=this.userName,a.addEventListener("input",r=>{this.userName=r.target.value});let i=new n.ButtonComponent(e);i.setButtonText("Come\xE7ar \u2192"),i.setCta(),i.buttonEl.style.marginTop="16px",i.onClick(()=>{this.plugin.settings.userName=this.userName||"Jack",this.plugin.saveSettings(),this.step=1,this.renderStep()})}renderStep1(){let{contentEl:e}=this,s=this.plugin.settings.userName,a=f(g());e.createEl("h2",{text:"Passo 1 de 4 \u2014 Future Log"}),e.createEl("p",{text:`O Future Log \xE9 seu calend\xE1rio anual, ${s}. Aqui ficam eventos e tarefas que est\xE3o a mais de um m\xEAs de dist\xE2ncia.`}),e.createEl("p",{text:"No in\xEDcio de cada m\xEAs, voc\xEA revisa o Future Log e migra o que for pertinente para o Log Mensal."});let i=e.createEl("p",{text:`\u2192 Vamos criar o Future Log de ${a}.`});i.style.background="var(--background-secondary)",i.style.padding="12px",i.style.borderRadius="6px",i.style.marginTop="12px";let r=new n.ButtonComponent(e);r.setButtonText(`Criar Future Log ${a}`),r.setCta(),r.buttonEl.style.marginTop="16px",r.onClick(async()=>{await this.plugin.openOrCreateFutureLog(a),this.step=2,this.renderStep()})}renderStep2(){let{contentEl:e}=this,s=g(),a=d(s),i=E(s),r=f(s);e.createEl("h2",{text:"Passo 2 de 4 \u2014 Log Mensal"}),e.createEl("p",{text:"O Log Mensal tem o calend\xE1rio do m\xEAs, suas tarefas e projetos, h\xE1bitos que quer acompanhar e espa\xE7o para revis\xE3o no final do m\xEAs."}),e.createEl("p",{text:"No in\xEDcio de cada m\xEAs, voc\xEA cria um novo mensal e migra as tarefas pendentes do m\xEAs anterior."});let l=e.createEl("p",{text:`\u2192 Vamos criar o Log Mensal de ${i} ${r}.`});l.style.background="var(--background-secondary)",l.style.padding="12px",l.style.borderRadius="6px",l.style.marginTop="12px";let c=new n.ButtonComponent(e);c.setButtonText(`Criar Log Mensal \u2014 ${a}`),c.setCta(),c.buttonEl.style.marginTop="16px",c.onClick(async()=>{await this.plugin.openOrCreateMonthlyLog(s),this.step=3,this.renderStep()})}renderStep3(){let{contentEl:e}=this,s=g(),a=h(s);e.createEl("h2",{text:"Passo 3 de 4 \u2014 Log Di\xE1rio"}),e.createEl("p",{text:"O Log Di\xE1rio \xE9 o cora\xE7\xE3o do sistema. Voc\xEA abre todo dia, registra tarefas, eventos e notas."});let i=e.createEl("ul");["Tarefas recorrentes \u2014 sua rotina fixa","Tarefas de projetos \u2014 s\xF3 as que est\xE3o em execu\xE7\xE3o","Herdado de ontem \u2014 tarefas pendentes do dia anterior","Eventos e notas livres do dia"].forEach(c=>i.createEl("li",{text:c}));let r=e.createEl("p",{text:`\u2192 Vamos criar o Log de hoje (${a}).`});r.style.background="var(--background-secondary)",r.style.padding="12px",r.style.borderRadius="6px",r.style.marginTop="12px";let l=new n.ButtonComponent(e);l.setButtonText(`Criar Log de Hoje \u2014 ${a}`),l.setCta(),l.buttonEl.style.marginTop="16px",l.onClick(async()=>{await this.plugin.openOrCreateDailyLog(s),this.step=4,this.renderStep()})}renderStep4(){let{contentEl:e}=this,s=this.plugin.settings.userName;e.createEl("h2",{text:`Pronto, ${s}!`}),e.createEl("p",{text:"Seu sistema est\xE1 configurado. A rotina \xE9 simples:"}),[{emoji:"\u2600\uFE0F",title:"Todo dia",text:'Abra o log di\xE1rio (\xEDcone do livro na barra lateral ou Cmd+P \u2192 "Abrir log de hoje"). Registre tarefas, eventos e notas.'},{emoji:"\u{1F4C5}",title:"Todo m\xEAs",text:"Crie o Log Mensal do novo m\xEAs, migre as tarefas pendentes e revise o m\xEAs anterior."},{emoji:"\u{1F4CB}",title:"Novos projetos",text:'Cmd+P \u2192 "Novo projeto". Coloque as tarefas em execu\xE7\xE3o no log di\xE1rio.'},{emoji:"\u{1F52E}",title:"Coisas distantes",text:"Anote no Future Log. No come\xE7o do m\xEAs, migre para o mensal."}].forEach(({emoji:r,title:l,text:c})=>{let u=e.createEl("div");u.style.background="var(--background-secondary)",u.style.padding="12px",u.style.borderRadius="6px",u.style.marginTop="10px",u.createEl("strong",{text:`${r} ${l}`}),u.createEl("p",{text:c}).style.margin="4px 0 0 0"});let i=new n.ButtonComponent(e);i.setButtonText("Come\xE7ar a usar \u2192"),i.setCta(),i.buttonEl.style.marginTop="20px",i.onClick(async()=>{this.plugin.settings.onboardingDone=!0,await this.plugin.saveSettings(),this.close(),await this.plugin.openFile("INDEX.md")})}},v=class extends n.Modal{constructor(e,s){super(e);this.projectName="";this.onSubmit=s}onOpen(){let{contentEl:e}=this;e.createEl("h2",{text:"Novo Projeto"}),new n.Setting(e).setName("Nome do projeto").addText(s=>{s.setPlaceholder("Ex: Site da empresa X"),s.onChange(a=>{this.projectName=a}),setTimeout(()=>s.inputEl.focus(),50)}),new n.Setting(e).addButton(s=>{s.setButtonText("Criar projeto"),s.setCta(),s.onClick(()=>{if(!this.projectName.trim()){new n.Notice("Digite um nome para o projeto.");return}this.close(),this.onSubmit(this.projectName.trim())})})}onClose(){this.contentEl.empty()}},D=class extends n.PluginSettingTab{constructor(t,e){super(t,e),this.plugin=e}display(){let{containerEl:t}=this;t.empty(),t.createEl("h2",{text:"Jacks Bullet \u2014 Configura\xE7\xF5es"}),new n.Setting(t).setName("Pasta dos logs di\xE1rios").setDesc("Padr\xE3o: logs/daily").addText(e=>{e.setValue(this.plugin.settings.dailyFolder),e.onChange(async s=>{this.plugin.settings.dailyFolder=s,await this.plugin.saveSettings()})}),new n.Setting(t).setName("Pasta dos logs mensais").setDesc("Padr\xE3o: logs/monthly").addText(e=>{e.setValue(this.plugin.settings.monthlyFolder),e.onChange(async s=>{this.plugin.settings.monthlyFolder=s,await this.plugin.saveSettings()})}),new n.Setting(t).setName("Pasta do future log").setDesc("Padr\xE3o: logs/future").addText(e=>{e.setValue(this.plugin.settings.futureFolder),e.onChange(async s=>{this.plugin.settings.futureFolder=s,await this.plugin.saveSettings()})}),new n.Setting(t).setName("Pasta dos projetos").setDesc("Padr\xE3o: logs/projects").addText(e=>{e.setValue(this.plugin.settings.projectsFolder),e.onChange(async s=>{this.plugin.settings.projectsFolder=s,await this.plugin.saveSettings()})}),new n.Setting(t).setName("Repetir onboarding").setDesc("Reabre o guia de configura\xE7\xE3o inicial").addButton(e=>{e.setButtonText("Abrir onboarding"),e.onClick(()=>{this.plugin.settings.onboardingDone=!1,this.plugin.saveSettings(),new x(this.app,this.plugin).open()})})}};
+*\u2190 [[../INDEX|Dashboard]]*
+`}var b=class extends i.Plugin{async onload(){await this.loadSettings(),this.addRibbonIcon("book-open","Today's Log",async()=>{await this.openOrCreateDailyLog(h())}),this.addCommand({id:"open-today",name:"Open today's log",callback:async()=>{await this.openOrCreateDailyLog(h())}}),this.addCommand({id:"new-monthly",name:"New monthly log",callback:async()=>{await this.openOrCreateMonthlyLog(h())}}),this.addCommand({id:"new-future",name:"New future log",callback:async()=>{await this.openOrCreateFutureLog(F(h()))}}),this.addCommand({id:"new-project",name:"New project",callback:async()=>{new v(this.app,async n=>{await this.createProjectLog(n)}).open()}}),this.addCommand({id:"open-index",name:"Open Dashboard (INDEX)",callback:async()=>{await this.openFile("INDEX.md")}}),this.addCommand({id:"edit-recurring",name:"Edit recurring tasks",callback:async()=>{await this.openRecurringFile()}}),this.addSettingTab(new E(this.app,this)),this.settings.onboardingDone||setTimeout(()=>{new w(this.app,this).open()},800)}async ensureFolder(n){let t=n.split("/"),e="";for(let r of t)e=e?`${e}/${r}`:r,this.app.vault.getAbstractFileByPath(e)||await this.app.vault.createFolder(e)}async createFile(n,t){let e=n.substring(0,n.lastIndexOf("/"));return e&&await this.ensureFolder(e),await this.app.vault.create(n,t)}async openFile(n){let t=this.app.vault.getAbstractFileByPath(n);t instanceof i.TFile&&await this.app.workspace.getLeaf(!1).openFile(t)}get dailyFolder(){return`${this.settings.logsFolder}/daily`}get monthlyFolder(){return`${this.settings.logsFolder}/monthly`}get futureFolder(){return`${this.settings.logsFolder}/future`}async getRecurringTasks(){let n=this.app.vault.getAbstractFileByPath(this.settings.recurringFile);if(!(n instanceof i.TFile))return[];let t=await this.app.vault.read(n),e=[];for(let r of t.split(`
+`)){let a=r.replace(/^-\s*/,"").trim();a&&!a.startsWith("#")&&!a.startsWith(">")&&e.push(a)}return e.filter(Boolean)}async openRecurringFile(){let n=this.settings.recurringFile,t=this.app.vault.getAbstractFileByPath(n);t instanceof i.TFile||(t=await this.createFile(n,O()),new i.Notice("recurring.md created. Add your recurring tasks here.")),await this.app.workspace.getLeaf(!1).openFile(t)}async openOrCreateDailyLog(n){let t=g(n),e=m(n),r=`${this.dailyFolder}/${t}/${e}.md`,a=this.app.vault.getAbstractFileByPath(r);if(!(a instanceof i.TFile)){let[o,l]=await Promise.all([this.getRecurringTasks(),this.getMigratedTasks(n)]),c=R(n,o,l);a=await this.createFile(r,c),new i.Notice(`Daily log for ${e} created.`)}return await this.app.workspace.getLeaf(!1).openFile(a),a}async openOrCreateMonthlyLog(n){let t=g(n),e=`${this.monthlyFolder}/${t}.md`,r=this.app.vault.getAbstractFileByPath(e);if(!(r instanceof i.TFile)){let a=I(n,this.settings.projectsFolder);r=await this.createFile(e,a),new i.Notice(`Monthly log ${t} created.`)}return await this.app.workspace.getLeaf(!1).openFile(r),r}async openOrCreateFutureLog(n){let t=`${this.futureFolder}/${n}-future.md`,e=this.app.vault.getAbstractFileByPath(t);if(!(e instanceof i.TFile)){let r=J(n);e=await this.createFile(t,r),new i.Notice(`Future Log ${n} created.`)}return await this.app.workspace.getLeaf(!1).openFile(e),e}async createProjectLog(n){let t=n.toLowerCase().replace(/\s+/g,"-").replace(/[^\w-]/g,""),e=`${this.settings.projectsFolder}/${t}.md`,r=this.app.vault.getAbstractFileByPath(e);if(r instanceof i.TFile)return new i.Notice(`Project "${n}" already exists.`),await this.app.workspace.getLeaf(!1).openFile(r),r;let a=W(n);return r=await this.createFile(e,a),new i.Notice(`Project "${n}" created.`),await this.app.workspace.getLeaf(!1).openFile(r),r}async getMigratedTasks(n){let t=y(n,-1),e=g(t),r=m(t),a=`${this.dailyFolder}/${e}/${r}.md`,o=this.app.vault.getAbstractFileByPath(a);if(!(o instanceof i.TFile))return[];let l=await this.app.vault.read(o),c=[],u=l.split(`
+`),p=!1;for(let d of u){if(d.includes("## Recurring Tasks")){p=!0;continue}p&&d.startsWith("## ")&&(p=!1),!p&&/^- \[ \] .+/.test(d)&&c.push(d.replace(/^- \[ \] /,"").trim())}return c}async loadSettings(){this.settings=Object.assign({},P,await this.loadData())}async saveSettings(){await this.saveData(this.settings)}},w=class extends i.Modal{constructor(t,e){super(t);this.step=0;this.userName="";this.plugin=e}onOpen(){this.renderStep()}onClose(){this.contentEl.empty()}renderStep(){let{contentEl:t}=this;t.empty(),[this.renderStep0.bind(this),this.renderStep1.bind(this),this.renderStep2.bind(this),this.renderStep3.bind(this),this.renderStep4.bind(this),this.renderStep5.bind(this)][this.step]()}renderStep0(){let{contentEl:t}=this;t.createEl("h2",{text:"Welcome to Jacks Bullet"}),t.createEl("p",{text:"A Bullet Journal system for Obsidian. Let's set everything up in under 2 minutes."}),t.createEl("p",{text:"You'll create your Future Log, Monthly Log, first Daily Log, and set up your recurring tasks."});let e=t.createEl("p",{text:"What's your name?"});e.style.marginTop="16px",e.style.fontWeight="600";let r=t.createEl("input",{type:"text",placeholder:"Your name"});r.style.cssText="width:100%;padding:8px;margin-top:8px;border-radius:4px;border:1px solid var(--background-modifier-border);background:var(--background-primary);color:var(--text-normal);",r.value=this.userName,r.addEventListener("input",o=>{this.userName=o.target.value});let a=new i.ButtonComponent(t);a.setButtonText("Get started \u2192"),a.setCta(),a.buttonEl.style.marginTop="16px",a.onClick(async()=>{let o=this.userName.trim()||"My";this.plugin.settings.userName=o;let l=N(o);this.plugin.settings.logsFolder=l.logsFolder,this.plugin.settings.projectsFolder=l.projectsFolder,this.plugin.settings.collectionsFolder=l.collectionsFolder,this.plugin.settings.recurringFile=l.recurringFile,await this.plugin.saveSettings(),this.step=1,this.renderStep()})}renderStep1(){let{contentEl:t}=this,e=this.plugin.settings.userName;t.createEl("h2",{text:"Step 1 of 5 \u2014 Recurring Tasks"}),t.createEl("p",{text:`${e}, recurring tasks are things you do every day \u2014 exercise, review email, journal, etc.`}),t.createEl("p",{text:"They're stored in a single file (recurring.md) and automatically added to every daily log."});let r=t.createEl("p",{text:"\u2192 Let's create your recurring tasks file. You can edit it anytime."});r.style.cssText="background:var(--background-secondary);padding:12px;border-radius:6px;margin-top:12px;";let a=new i.ButtonComponent(t);a.setButtonText("Create recurring.md"),a.setCta(),a.buttonEl.style.marginTop="16px",a.onClick(async()=>{await this.plugin.openRecurringFile(),this.step=2,this.renderStep()})}renderStep2(){let{contentEl:t}=this,e=this.plugin.settings.userName,r=F(h());t.createEl("h2",{text:"Step 2 of 5 \u2014 Future Log"}),t.createEl("p",{text:`The Future Log is your yearly calendar, ${e}. Events and tasks more than a month away live here.`}),t.createEl("p",{text:"At the start of each month, migrate what's relevant to the Monthly Log."});let a=t.createEl("p",{text:`\u2192 Let's create the Future Log for ${r}.`});a.style.cssText="background:var(--background-secondary);padding:12px;border-radius:6px;margin-top:12px;";let o=new i.ButtonComponent(t);o.setButtonText(`Create Future Log ${r}`),o.setCta(),o.buttonEl.style.marginTop="16px",o.onClick(async()=>{await this.plugin.openOrCreateFutureLog(r),this.step=3,this.renderStep()})}renderStep3(){let{contentEl:t}=this,e=h(),r=g(e),a=$(e),o=F(e);t.createEl("h2",{text:"Step 3 of 5 \u2014 Monthly Log"}),t.createEl("p",{text:"The Monthly Log has the event calendar, your tasks and projects, habits to track, and space for a monthly review."}),t.createEl("p",{text:"At the start of each month, create a new one and migrate pending tasks from the previous month."});let l=t.createEl("p",{text:`\u2192 Let's create the Monthly Log for ${a} ${o}.`});l.style.cssText="background:var(--background-secondary);padding:12px;border-radius:6px;margin-top:12px;";let c=new i.ButtonComponent(t);c.setButtonText(`Create Monthly Log \u2014 ${r}`),c.setCta(),c.buttonEl.style.marginTop="16px",c.onClick(async()=>{await this.plugin.openOrCreateMonthlyLog(e),this.step=4,this.renderStep()})}renderStep4(){let{contentEl:t}=this,e=h(),r=m(e);t.createEl("h2",{text:"Step 4 of 5 \u2014 Daily Log"}),t.createEl("p",{text:"The Daily Log is the heart of the system. Open it every day to track tasks, events, and notes."});let a=t.createEl("ul");["Recurring tasks \u2014 pulled automatically from recurring.md","Project tasks \u2014 only active tasks, no backlog","Inherited from yesterday \u2014 pending tasks carried over","Events and free notes"].forEach(c=>a.createEl("li",{text:c}));let o=t.createEl("p",{text:`\u2192 Let's create today's log (${r}).`});o.style.cssText="background:var(--background-secondary);padding:12px;border-radius:6px;margin-top:12px;";let l=new i.ButtonComponent(t);l.setButtonText(`Create Today's Log \u2014 ${r}`),l.setCta(),l.buttonEl.style.marginTop="16px",l.onClick(async()=>{await this.plugin.openOrCreateDailyLog(e),this.step=5,this.renderStep()})}renderStep5(){let{contentEl:t}=this,e=this.plugin.settings.userName;t.createEl("h2",{text:`All set, ${e}!`}),t.createEl("p",{text:"Your system is ready. The routine is simple:"}),[{emoji:"\u2600\uFE0F",title:"Every day",text:`Open today's log (book icon in the sidebar or Cmd+P \u2192 "Open today's log"). Log tasks, events, and notes.`},{emoji:"\u{1F4C5}",title:"Every month",text:"Create the new Monthly Log, migrate pending tasks, and review the previous month."},{emoji:"\u{1F4CB}",title:"New projects",text:'Cmd+P \u2192 "New project". Add active tasks to your daily log.'},{emoji:"\u{1F52E}",title:"Far-off things",text:"Log in Future Log. Migrate to monthly at the start of each month."},{emoji:"\u{1F501}",title:"Recurring tasks",text:'Edit recurring.md once (Cmd+P \u2192 "Edit recurring tasks"). They appear in every daily log automatically.'}].forEach(({emoji:o,title:l,text:c})=>{let u=t.createEl("div");u.style.cssText="background:var(--background-secondary);padding:12px;border-radius:6px;margin-top:10px;",u.createEl("strong",{text:`${o} ${l}`}),u.createEl("p",{text:c}).style.margin="4px 0 0 0"});let a=new i.ButtonComponent(t);a.setButtonText("Start using \u2192"),a.setCta(),a.buttonEl.style.marginTop="20px",a.onClick(async()=>{this.plugin.settings.onboardingDone=!0,await this.plugin.saveSettings(),this.close(),await this.plugin.openFile("INDEX.md")})}},v=class extends i.Modal{constructor(t,e){super(t);this.projectName="";this.onSubmit=e}onOpen(){let{contentEl:t}=this;t.createEl("h2",{text:"New Project"}),new i.Setting(t).setName("Project name").addText(e=>{e.setPlaceholder("e.g. Company website"),e.onChange(r=>{this.projectName=r}),setTimeout(()=>e.inputEl.focus(),50)}),new i.Setting(t).addButton(e=>{e.setButtonText("Create project"),e.setCta(),e.onClick(()=>{if(!this.projectName.trim()){new i.Notice("Enter a project name.");return}this.close(),this.onSubmit(this.projectName.trim())})})}onClose(){this.contentEl.empty()}},E=class extends i.PluginSettingTab{constructor(n,t){super(n,t),this.plugin=t}display(){let{containerEl:n}=this;n.empty(),n.createEl("h2",{text:"Jacks Bullet"}),new i.Setting(n).setName("Logs folder").setDesc("Contains daily, monthly and future subfolders.").addText(t=>{t.setValue(this.plugin.settings.logsFolder),t.onChange(async e=>{this.plugin.settings.logsFolder=e,this.plugin.settings.recurringFile=`${e}/recurring.md`,await this.plugin.saveSettings()})}),new i.Setting(n).setName("Projects folder").addText(t=>{t.setValue(this.plugin.settings.projectsFolder),t.onChange(async e=>{this.plugin.settings.projectsFolder=e,await this.plugin.saveSettings()})}),new i.Setting(n).setName("Collections folder").addText(t=>{t.setValue(this.plugin.settings.collectionsFolder),t.onChange(async e=>{this.plugin.settings.collectionsFolder=e,await this.plugin.saveSettings()})}),new i.Setting(n).setName("Recurring tasks file").setDesc("File where recurring tasks are stored.").addText(t=>{t.setValue(this.plugin.settings.recurringFile),t.onChange(async e=>{this.plugin.settings.recurringFile=e,await this.plugin.saveSettings()})}),new i.Setting(n).setName("Restart onboarding").setDesc("Reopens the setup guide.").addButton(t=>{t.setButtonText("Open onboarding"),t.onClick(()=>{this.plugin.settings.onboardingDone=!1,this.plugin.saveSettings(),new w(this.app,this.plugin).open()})})}};
