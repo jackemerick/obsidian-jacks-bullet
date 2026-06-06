@@ -278,6 +278,29 @@ function buildFutureLog(year: string): string {
 `;
 }
 
+function buildCollection(name: string): string {
+  const ds = dateStr(today());
+  return `# Collection — ${name}
+
+**Created:** ${ds}
+
+---
+
+> Describe in one line what you collect here.
+
+---
+
+## List
+
+-
+-
+
+---
+
+*← [[../INDEX|Dashboard]]*
+`;
+}
+
 function buildProjectLog(name: string): string {
   const ds = dateStr(today());
   return `# Project — ${name}
@@ -340,6 +363,18 @@ export default class JacksBulletPlugin extends Plugin {
       await this.openOrCreateDailyLog(today());
     });
 
+    this.addRibbonIcon("folder-plus", "New Project", async () => {
+      new NewProjectModal(this.app, async (name) => {
+        await this.createProjectLog(name);
+      }).open();
+    });
+
+    this.addRibbonIcon("library", "New Collection", async () => {
+      new NewCollectionModal(this.app, async (name) => {
+        await this.createCollection(name);
+      }).open();
+    });
+
     this.addCommand({
       id: "open-today",
       name: "Open today's log",
@@ -378,6 +413,16 @@ export default class JacksBulletPlugin extends Plugin {
       id: "edit-recurring",
       name: "Edit recurring tasks",
       callback: async () => { await this.openRecurringFile(); },
+    });
+
+    this.addCommand({
+      id: "new-collection",
+      name: "New collection",
+      callback: async () => {
+        new NewCollectionModal(this.app, async (name) => {
+          await this.createCollection(name);
+        }).open();
+      },
     });
 
     this.addSettingTab(new JacksBulletSettingTab(this.app, this));
@@ -509,6 +554,36 @@ export default class JacksBulletPlugin extends Plugin {
     return file as TFile;
   }
 
+  async initFolders() {
+    await Promise.all([
+      this.ensureFolder(this.settings.logsFolder),
+      this.ensureFolder(`${this.settings.logsFolder}/daily`),
+      this.ensureFolder(`${this.settings.logsFolder}/monthly`),
+      this.ensureFolder(`${this.settings.logsFolder}/future`),
+      this.ensureFolder(this.settings.projectsFolder),
+      this.ensureFolder(this.settings.collectionsFolder),
+    ]);
+  }
+
+  async createCollection(name: string): Promise<TFile> {
+    const slug = name.toLowerCase().replace(/\s+/g, "-").replace(/[^\w-]/g, "");
+    const path = `${this.settings.collectionsFolder}/${slug}.md`;
+
+    let file = this.app.vault.getAbstractFileByPath(path);
+
+    if (file instanceof TFile) {
+      new Notice(`Collection "${name}" already exists.`);
+      await this.app.workspace.getLeaf(false).openFile(file);
+      return file;
+    }
+
+    const content = buildCollection(name);
+    file = await this.createFile(path, content);
+    new Notice(`Collection "${name}" created.`);
+    await this.app.workspace.getLeaf(false).openFile(file as TFile);
+    return file as TFile;
+  }
+
   async createProjectLog(name: string): Promise<TFile> {
     const slug = name.toLowerCase().replace(/\s+/g, "-").replace(/[^\w-]/g, "");
     const path = `${this.settings.projectsFolder}/${slug}.md`;
@@ -620,13 +695,15 @@ class OnboardingModal extends Modal {
       const name = this.userName.trim() || "My";
       this.plugin.settings.userName = name;
 
-      // configura as pastas com o nome da pessoa
       const folders = defaultFolders(name);
       this.plugin.settings.logsFolder = folders.logsFolder;
       this.plugin.settings.projectsFolder = folders.projectsFolder;
       this.plugin.settings.collectionsFolder = folders.collectionsFolder;
       this.plugin.settings.recurringFile = folders.recurringFile;
       await this.plugin.saveSettings();
+
+      // cria todas as pastas imediatamente
+      await this.plugin.initFolders();
 
       this.step = 1;
       this.renderStep();
@@ -806,6 +883,46 @@ class NewProjectModal extends Modal {
         }
         this.close();
         this.onSubmit(this.projectName.trim());
+      });
+    });
+  }
+
+  onClose() { this.contentEl.empty(); }
+}
+
+// ─── New Collection Modal ─────────────────────────────────────────────────────
+
+class NewCollectionModal extends Modal {
+  onSubmit: (name: string) => void;
+  collectionName: string = "";
+
+  constructor(app: App, onSubmit: (name: string) => void) {
+    super(app);
+    this.onSubmit = onSubmit;
+  }
+
+  onOpen() {
+    const { contentEl } = this;
+    contentEl.createEl("h2", { text: "New Collection" });
+
+    new Setting(contentEl)
+      .setName("Collection name")
+      .addText((text) => {
+        text.setPlaceholder("e.g. Books to Read");
+        text.onChange((value) => { this.collectionName = value; });
+        setTimeout(() => text.inputEl.focus(), 50);
+      });
+
+    new Setting(contentEl).addButton((btn) => {
+      btn.setButtonText("Create collection");
+      btn.setCta();
+      btn.onClick(() => {
+        if (!this.collectionName.trim()) {
+          new Notice("Enter a collection name.");
+          return;
+        }
+        this.close();
+        this.onSubmit(this.collectionName.trim());
       });
     });
   }
