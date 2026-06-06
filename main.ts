@@ -78,8 +78,19 @@ const MONTH_NAMES = [
   "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro",
 ];
 
+const WEEKDAY_SHORT = ["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sáb"];
+
 function monthName(d: Date): string {
   return MONTH_NAMES[d.getMonth()];
+}
+
+function calendarDateStr(year: number, month: number, day: number): string {
+  const d = new Date(year, month, day);
+  const dd = pad(day);
+  const mm = pad(month + 1);
+  const yy = String(year).slice(2);
+  const dow = WEEKDAY_SHORT[d.getDay()];
+  return `${dd}/${mm}/${yy} - ${dow}`;
 }
 
 function daysInMonth(d: Date): number {
@@ -99,7 +110,15 @@ function buildRecurring(): string {
 `;
 }
 
-function buildDailyLog(d: Date, recurringTasks: string[], migratedTasks: string[]): string {
+function buildProjectsSection(projectTasks: Record<string, string[]>): string {
+  const entries = Object.entries(projectTasks);
+  if (entries.length === 0) return "> No active project tasks.\n";
+  return entries.map(([project, tasks]) =>
+    `### ${project}\n${tasks.map((t) => `- [ ] ${t}`).join("\n")}`
+  ).join("\n\n");
+}
+
+function buildDailyLog(d: Date, recurringTasks: string[], migratedTasks: string[], projectTasks: Record<string, string[]>): string {
   const ds = dateStr(d);
   const ms = monthStr(d);
   const year = yearStr(d);
@@ -116,6 +135,8 @@ function buildDailyLog(d: Date, recurringTasks: string[], migratedTasks: string[
     ? migratedTasks.map((t) => `- [>] ${t}`).join("\n")
     : "- [ ] ";
 
+  const projects = buildProjectsSection(projectTasks);
+
   return `# Daily Log — ${ds}
 
 ← [[${prevMs}/${yesterday}|← Yesterday]] | [[${nextMs}/${tomorrow}|Tomorrow →]]
@@ -131,9 +152,7 @@ ${recurring}
 
 ## Projects
 
-> Active tasks (not backlog) from each ongoing project.
-
-- [ ]
+${projects}
 
 ---
 
@@ -168,8 +187,8 @@ function buildMonthlyLog(d: Date, projectsFolder: string): string {
   const days = daysInMonth(d);
 
   const calendarRows = Array.from({ length: days }, (_, i) => {
-    const day = pad(i + 1);
-    return `| ${year}-${pad(d.getMonth() + 1)}-${day} | |`;
+    const label = calendarDateStr(d.getFullYear(), d.getMonth(), i + 1);
+    return `| ${label} | |`;
   }).join("\n");
 
   return `# Monthly Log — ${name} ${year}
@@ -432,6 +451,17 @@ export default class JacksBulletPlugin extends Plugin {
       await this.initFolders();
     }
 
+    // monitora mudanças em arquivos de projeto e sincroniza com o daily de hoje
+    this.registerEvent(
+      this.app.vault.on("modify", async (file) => {
+        if (file instanceof TFile &&
+            file.path.startsWith(this.settings.projectsFolder + "/") &&
+            file.extension === "md") {
+          await this.syncProjectsToTodayLog();
+        }
+      })
+    );
+
     // URL scheme: obsidian://jacks-bullet?action=daily
     this.registerObsidianProtocolHandler("jacks-bullet", async (params) => {
       if (params.action === "daily") await this.openOrCreateDailyLog(today());
@@ -480,6 +510,68 @@ export default class JacksBulletPlugin extends Plugin {
   get monthlyFolder() { return `${this.settings.logsFolder}/monthly`; }
   get futureFolder() { return `${this.settings.logsFolder}/future`; }
 
+  // ─── Project tasks ─────────────────────────────────────────────────────────
+
+  async getActiveProjectTasks(): Promise<Record<string, string[]>> {
+    const folder = this.app.vault.getAbstractFileByPath(this.settings.projectsFolder);
+    if (!folder) return {};
+
+    const result: Record<string, string[]> = {};
+    const files = this.app.vault.getFiles().filter(f =>
+      f.path.startsWith(this.settings.projectsFolder + "/") && f.extension === "md"
+    );
+
+    for (const file of files) {
+      const content = await this.app.vault.read(file);
+      const tasks = this.extractActiveTasks(content);
+      if (tasks.length > 0) {
+        const projectName = file.basename;
+        result[projectName] = tasks;
+      }
+    }
+
+    return result;
+  }
+
+  extractActiveTasks(content: string): string[] {
+    const lines = content.split("\n");
+    const tasks: string[] = [];
+    let inActiveSection = false;
+
+    for (const line of lines) {
+      if (/^## Active Tasks/.test(line)) { inActiveSection = true; continue; }
+      if (inActiveSection && /^## /.test(line)) break;
+      if (inActiveSection && /^- \[ \] .+/.test(line)) {
+        tasks.push(line.replace(/^- \[ \] /, "").trim());
+      }
+    }
+
+    return tasks;
+  }
+
+  async syncProjectsToTodayLog() {
+    const ds = dateStr(today());
+    const ms = monthStr(today());
+    const path = `${this.dailyFolder}/${ms}/${ds}.md`;
+
+    const file = this.app.vault.getAbstractFileByPath(path);
+    if (!(file instanceof TFile)) return;
+
+    const content = await this.app.vault.read(file);
+    const projectTasks = await this.getActiveProjectTasks();
+    const newSection = buildProjectsSection(projectTasks);
+
+    // substitui tudo entre "## Projects" e o próximo "---"
+    const updated = content.replace(
+      /(## Projects\n)([\s\S]*?)(\n---)/,
+      `$1\n${newSection}\n$3`
+    );
+
+    if (updated !== content) {
+      await this.app.vault.modify(file, updated);
+    }
+  }
+
   // ─── Recurring tasks ───────────────────────────────────────────────────────
 
   async getRecurringTasks(): Promise<string[]> {
@@ -519,11 +611,12 @@ export default class JacksBulletPlugin extends Plugin {
     let file = this.app.vault.getAbstractFileByPath(path);
 
     if (!(file instanceof TFile)) {
-      const [recurring, migrated] = await Promise.all([
+      const [recurring, migrated, projectTasks] = await Promise.all([
         this.getRecurringTasks(),
         this.getMigratedTasks(d),
+        this.getActiveProjectTasks(),
       ]);
-      const content = buildDailyLog(d, recurring, migrated);
+      const content = buildDailyLog(d, recurring, migrated, projectTasks);
       file = await this.createFile(path, content);
       new Notice(`Daily log for ${ds} created.`);
     }
