@@ -110,15 +110,16 @@ function buildRecurring(): string {
 `;
 }
 
-function buildProjectsSection(projectTasks: Record<string, string[]>): string {
+function buildProjectsSection(projectTasks: Record<string, string[]>, projectsFolder: string): string {
   const entries = Object.entries(projectTasks);
   if (entries.length === 0) return "> Nenhuma tarefa ativa em projetos.\n";
-  return entries.map(([project, tasks]) =>
-    `### ${project}\n${tasks.map((t) => `- [ ] ${t}`).join("\n")}`
-  ).join("\n\n");
+  return entries.map(([project, tasks]) => {
+    const slug = project.toLowerCase().replace(/\s+/g, "-").replace(/[^\w-]/g, "");
+    return `### [[${projectsFolder}/${slug}|${project}]]\n${tasks.map((t) => `- [ ] ${t}`).join("\n")}`;
+  }).join("\n\n");
 }
 
-function buildDailyLog(d: Date, recurringTasks: string[], migratedTasks: string[], projectTasks: Record<string, string[]>): string {
+function buildDailyLog(d: Date, recurringTasks: string[], migratedTasks: string[], projectTasks: Record<string, string[]>, projectsFolder: string): string {
   const ds = dateStr(d);
   const ms = monthStr(d);
   const year = yearStr(d);
@@ -135,7 +136,7 @@ function buildDailyLog(d: Date, recurringTasks: string[], migratedTasks: string[
     ? migratedTasks.map((t) => `- [>] ${t}`).join("\n")
     : "- [ ] ";
 
-  const projects = buildProjectsSection(projectTasks);
+  const projects = buildProjectsSection(projectTasks, projectsFolder);
 
   return `# Diário — ${ds}
 
@@ -554,7 +555,7 @@ export default class JackJournalPlugin extends Plugin {
 
     const content = await this.app.vault.read(file);
     const projectTasks = await this.getActiveProjectTasks();
-    const newSection = buildProjectsSection(projectTasks);
+    const newSection = buildProjectsSection(projectTasks, this.settings.projectsFolder);
 
     const updated = content.replace(
       /(## Projetos\n)([\s\S]*?)(\n---)/,
@@ -610,7 +611,7 @@ export default class JackJournalPlugin extends Plugin {
         this.getMigratedTasks(d),
         this.getActiveProjectTasks(),
       ]);
-      const content = buildDailyLog(d, recurring, migrated, projectTasks);
+      const content = buildDailyLog(d, recurring, migrated, projectTasks, this.settings.projectsFolder);
       file = await this.createFile(path, content);
       new Notice(`Diário de ${ds} criado.`);
     }
@@ -714,6 +715,7 @@ export default class JackJournalPlugin extends Plugin {
     for (const line of lines) {
       if (line.includes("## Tarefas Recorrentes")) { inRecurring = true; continue; }
       if (inRecurring && line.startsWith("## ")) inRecurring = false;
+      // só herda tarefas não concluídas (exclui [x] e [>])
       if (!inRecurring && /^- \[ \] .+/.test(line)) {
         tasks.push(line.replace(/^- \[ \] /, "").trim());
       }
