@@ -1,7 +1,7 @@
 {
   "id": "jack-journal",
   "name": "Jack Journal",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "minAppVersion": "1.4.0",
   "description": "Sistema de Bullet Journal para o Obsidian — diário, mensal, log futuro e projetos com onboarding guiado.",
   "author": "Jack Emerick",

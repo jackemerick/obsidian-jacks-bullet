@@ -133,7 +133,7 @@ function buildDailyLog(d: Date, recurringTasks: string[], migratedTasks: string[
     : "- [ ] ";
 
   const inherited = migratedTasks.length > 0
-    ? migratedTasks.map((t) => `- [>] ${t}`).join("\n")
+    ? migratedTasks.map((t) => `- [ ] ${t}`).join("\n")
     : "- [ ] ";
 
   const projects = buildProjectsSection(projectTasks, projectsFolder);
